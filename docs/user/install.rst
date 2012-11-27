@@ -3,7 +3,7 @@
 Installation
 ============
 
-This part of the documentation covers the installation of Retask.
+This part of the documentation covers the installation of rst.
 The first step to using any software package is getting it properly installed.
 
 
@@ -12,11 +12,11 @@ Distribute & Pip
 
 Installing requests is simple with `pip <http://www.pip-installer.org/>`_::
 
-    $ pip install retask
+    $ pip install rst
 
 or, with `easy_install <http://pypi.python.org/pypi/setuptools>`_::
 
-    $ easy_install retask
+    $ easy_install rst
 
 But, you really `shouldn't do that <http://www.pip-installer.org/en/latest/other-tools.html#pip-compared-to-easy-install>`_.
 
@@ -25,20 +25,20 @@ But, you really `shouldn't do that <http://www.pip-installer.org/en/latest/other
 Get the Code
 ------------
 
-Retask is actively developed on GitHub, where the code is
-`always available <https://github.com/kushaldas/retask>`_.
+rst is actively developed on GitHub, where the code is
+`always available <https://github.com/kushaldas/rst>`_.
 
 You can either clone the public repository::
 
-    git clone git://github.com/kushaldas/retask.git
+    git clone git://github.com/kushaldas/rst.git
 
-Download the `tarball <https://github.com/kushaldas/retask/tarball/master>`_::
+Download the `tarball <https://github.com/kushaldas/rst/tarball/master>`_::
 
-    $ curl -OL https://github.com/kushaldas/retask/tarball/master
+    $ curl -OL https://github.com/kushaldas/rst/tarball/master
 
-Or, download the `zipball <https://github.com/kushaldas/retask/zipball/master>`_::
+Or, download the `zipball <https://github.com/kushaldas/rst/zipball/master>`_::
 
-    $ curl -OL https://github.com/kushaldas/retask/tarball/master
+    $ curl -OL https://github.com/kushaldas/rst/tarball/master
 
 
 Once you have a copy of the source, you can embed it in your Python package,
@@ -46,12 +46,3 @@ or install it into your site-packages easily::
 
     $ python setup.py install
 
-.. _redis:
-
-Installing redis-py
--------------------
-
-
-You can install ``redis-py`` with ``pip``::
-
-    $ pip install redis
