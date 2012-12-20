@@ -14,6 +14,7 @@ Contents:
 
    user/intro
    user/install
+   user/quickstart
 
 
 
