@@ -3,41 +3,38 @@
 Quickstart
 ==========
 
-For this example to work you should have your redis instance
-up and running.
-
-producer.py
------------
-This code puts new task in the queue. We will have a dictionary as
-the information in this example.
-
-::
-
-    from retask.task import Task
-    from retask.queue import Queue
-    queue = Queue('example')
-    info1 = {'user':'kushal', 'url':'http://kushaldas.in'}
-    info2 = {'user':'fedora planet', 'url':'http://planet.fedoraproject.org'}
-    task1 = Task(info1)
-    task2 = Task(info2)
-    queue.connect()
-    queue.enqueue(task1)
-    queue.enqueue(task2)
+Here is a quick example to just start using it. ::
 
 
-consumer.py
------------
-This code gets the tasks from the queue. Based on the actual requirement, the
-client will work on the information it received as the task. For now we will
-just print the data.
+    #!/usr/bin/env python
+    from rst import rst
 
-::
+    def main():
+        doc = rst.Document('Title of the report')
+        para = rst.Paragraph('Just another paragraph. We need few more of these.')
+        doc.add_child(para)
+        sec = rst.Section('Another', 2)
+        doc.add_child(sec)
+        para = rst.Paragraph('Can we do this? Yes we can.')
+        doc.add_child(para)
 
-    from retask.task import Task
-    from retask.queue import Queue
-    queue = Queue('example')
-    queue.connect()
-    while queue.length != 0:
-        task = queue.dequeue()
-        print task.data
+        blt = rst.Orderedlist()
+        blt.add_child('Red Hat')
+        blt.add_child('Fedora')
+        blt.add_child('Debian')
 
+        doc.add_child(blt)
+
+        sec2 = rst.Section('Why Python is awesome?', 2)
+        doc.add_child(sec2)
+
+        tbl = rst.Table('My friends', ['Name', 'Major Project'])
+        tbl.add_child(('Ramki', 'Python'))
+        tbl.add_child(('Pradeepto', 'KDE'))
+        tbl.add_child(('Nicubunu', 'Fedora'))
+        doc.add_child(tbl)
+
+        print doc.get_rst()
+
+    if __name__ == '__main__':
+        main()
