@@ -7,13 +7,13 @@ from setuptools import find_packages, setup
 setup(name='rst',
       version=0.1,
       description='Module to generate reStructuredText',
-      long_description='Module to generate reStructuredText',,
-      author='Kushal Das'
+      long_description='Module to generate reStructuredText',
+      author='Kushal Das',
       author_email='kushaldas@gmail.com',
       maintainer='Kushal Das',
       maintainer_email='kushaldas@gmail.com',
-      license=rl.LICENSE,
-      url=rl.URL,
+      license='MIT',
+      url='http://rst.rtfd.org',
       classifiers=[
           'Development Status :: 4 - Beta',
           'Topic :: Software Development :: Libraries',
