@@ -54,7 +54,7 @@ class Document(object):
     def add_child(self, node):
         """
         Adds a ``Node`` object to the Document.
-        Returns ``True`` in case of success. 
+        Returns ``True`` in case of success.
         """
         self.children.append(node)
         return True
