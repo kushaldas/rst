@@ -25,8 +25,8 @@ from setuptools import find_packages, setup
 
 setup(name='rst',
       version=0.1,
-      description='Module to generate reStructuredText',
-      long_description='Module to generate reStructuredText',
+      description='Module to create reStructuredText documents through code.',
+      long_description='rst is a python module to create reStructuredText documents through code.',
       author='Kushal Das',
       author_email='kushaldas@gmail.com',
       maintainer='Kushal Das',
