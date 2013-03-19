@@ -18,13 +18,12 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 
-import six
 import codecs
-import StringIO
+try:
+    import StringIO
+except:
+    import io
 from six import u
-from functools import partial
-
-text_ = partial(six.text_type, encoding='utf-8', errors='replace')
 
 
 def create_section(text, depth):
@@ -39,9 +38,9 @@ def create_section(text, depth):
 def print_table(out, header):
     for i, hdr in enumerate(header):
         if i == 0:
-            out.write(u('    * -  %s\n' % hdr))
+            out.write(u('    * -  %s\n') % hdr)
         else:
-            out.write(u('      -  %s\n' % hdr))
+            out.write(u('      -  %s\n') % hdr)
 
 
 class Document(object):
@@ -49,7 +48,7 @@ class Document(object):
     Returns a ``Document`` object.
     """
     def __init__(self, title):
-        self.title = text_(title)
+        self.title = title
         self.children = []
 
     def add_child(self, node):
@@ -74,31 +73,34 @@ class Document(object):
         """
         Returns the rst representation of the document in unicode format.
         """
-        out = StringIO.StringIO()
+        try:
+            out = StringIO.StringIO()
+        except:
+            out = io.StringIO()
         text = create_section(self.title, 1)
         out.write(text)
         #Now goto each children
         for child in self.children:
             if isinstance(child, Paragraph):
                 #We have a paragraph here
-                out.write(child.text + u'\n\n')
+                out.write(child.text + u('\n\n'))
             elif isinstance(child, Section):
                 text = create_section(child.text, child.depth)
                 out.write(text)
             elif isinstance(child, Bulletlist):
                 for ch in child.children:
-                    out.write(u' ' * 4 + '* ' + ch + u'\n')
-                out.write(u'\n')
+                    out.write(u("{}* {}\n".format(' ' * 4, ch)))
+                out.write(u('\n'))
             elif isinstance(child, Orderedlist):
                 for i, ch in enumerate(child.children):
-                    out.write(u' ' * 4 + u'%s. ' % str(i + 1) + ch + u'\n')
-                out.write(u'\n')
+                    out.write(u("{}{}. {}\n".format(' ' * 4, str(i+1), ch)))
+                out.write(u('\n'))
             elif isinstance(child, Table):
-                out.write(u'.. list-table:: %s\n' % child.text)
+                out.write(u('.. list-table:: %s\n') % child.text)
                 if child.width:
-                    out.write(u'    %s' % child.width)
+                    out.write(u('    %s') % child.width)
                 if child.header:
-                    out.write(u'    :header-rows: 1\n\n')
+                    out.write(u('    :header-rows: 1\n\n'))
                     print_table(out, child.header)
                 for ch in child.children:
                     print_table(out, ch)
@@ -130,7 +132,7 @@ class Paragraph(Node):
     """
     def __init__(self, text=''):
         Node.__init__(self)
-        self.text = text_(text)
+        self.text = text
 
 
 class Section(Node):
@@ -141,7 +143,7 @@ class Section(Node):
     def __init__(self, title, depth=1):
         Node.__init__(self)
         self.depth = depth
-        self.text = text_(title)
+        self.text = title
 
 
 class Bulletlist(Node):
@@ -152,7 +154,7 @@ class Bulletlist(Node):
         Node.__init__(self)
 
     def add_item(self, text):
-        self.children.append(text_(text))
+        self.children.append(text)
 
 
 class Orderedlist(Node):
@@ -163,7 +165,7 @@ class Orderedlist(Node):
         Node.__init__(self)
 
     def add_item(self, text):
-        self.children.append(text_(text))
+        self.children.append(text)
 
 
 class Table(Node):
@@ -172,12 +174,12 @@ class Table(Node):
     """
     def __init__(self, title='', header=None, width=None):
         Node.__init__(self)
-        self.text = text_(title)
+        self.text = title
         self.header = header
         self.width = width
 
     def add_item(self, row):
-        self.children.append([text_(txt) for txt in row])
+        self.children.append([txt for txt in row])
 
 if __name__ == '__main__':
     doc = Document('Title of the report')
@@ -204,4 +206,4 @@ if __name__ == '__main__':
     tbl.add_child(('Nicubunu', 'Fedora'))
     doc.add_child(tbl)
 
-    print doc.get_rst()
+    doc.get_rst()
