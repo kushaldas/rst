@@ -1,4 +1,4 @@
-#Copyright (C) 2012, Kushal Das <kushaldas@gmail.com>
+#Copyright (C) 2012-2013, Kushal Das <kushaldas@gmail.com>
 
 #Permission is hereby granted, free of charge, to any person obtaining a copy of
 #this software and associated documentation files (the "Software"), to deal in
@@ -46,6 +46,18 @@ def print_table(out, header):
 class Document(object):
     """
     Returns a ``Document`` object.
+
+    .. doctest::
+
+        >>> import rst
+        >>> doc = rst.Document('Title of the report')
+        >>> print doc.get_rst()
+        ===================
+        Title of the report
+        ===================
+
+
+
     """
     def __init__(self, title):
         self.title = title
@@ -111,6 +123,8 @@ class Document(object):
 class Node(object):
     """
     Returns a ``Node`` object.
+
+    Inherit this if you want to add something new to the API.
     """
     def __init__(self):
         self.depth = 1
@@ -129,6 +143,22 @@ class Node(object):
 class Paragraph(Node):
     """
     Represents a paragraph
+
+    :arg text: Text to be present in the paragraph.
+
+    . doctest::
+
+        >>> import rst
+        >>> doc = rst.Document('Title of the report')
+        >>> para = rst.Paragraph('This is a paragraph. A long one.')
+        >>> doc.add_child(para)
+        True
+        >>> print doc.get_rst()
+        ===================
+        Title of the report
+        ===================
+
+        This is a paragraph. A long one.
     """
     def __init__(self, text=''):
         Node.__init__(self)
@@ -138,7 +168,9 @@ class Paragraph(Node):
 class Section(Node):
     """
     Represents a ``Section`` object.
-    If you add it under some other node, it will become subsection.
+    
+    :arg depth: Depth of the section, default is 1
+    :arg text: Title of the section
     """
     def __init__(self, title, depth=1):
         Node.__init__(self)
@@ -149,22 +181,67 @@ class Section(Node):
 class Bulletlist(Node):
     """
     Represents a Bullet List.
+
+    .. doctest::
+
+        >>> import rst
+        >>> doc = rst.Document('Title of the report')
+        >>> blt = rst.Bulletlist()
+        >>> blt.add_item('Fedora')
+        >>> blt.add_item('Debian')
+        >>> doc.add_child(blt)
+        True
+        >>> print doc.get_rst()
+        ===================
+        Title of the report
+        ===================
+
+            * Fedora
+            * Debian
     """
     def __init__(self):
         Node.__init__(self)
 
     def add_item(self, text):
+        """
+        Adds a new text block in the Bulletlist.
+
+        :arg text: text to be added in the list.
+        """
         self.children.append(text)
 
 
 class Orderedlist(Node):
     """
     Represents a Ordered List.
+
+    .. doctest::
+
+        >>> import rst
+        >>> doc = rst.Document('Title of the report')
+        >>> blt = rst.Orderedlist()
+        >>> blt.add_item('Fedora')
+        >>> blt.add_item('Debian')
+        >>> doc.add_child(blt)
+        True
+        >>> print doc.get_rst()
+        ===================
+        Title of the report
+        ===================
+
+            1. Fedora
+            2. Debian
+
     """
     def __init__(self):
         Node.__init__(self)
 
     def add_item(self, text):
+        """
+        Adds a new text block in the Bulletlist.
+
+        :arg text: text to be added in the list, remember it is ordered list.
+        """
         self.children.append(text)
 
 
@@ -179,6 +256,11 @@ class Table(Node):
         self.width = width
 
     def add_item(self, row):
+        """
+        Adds a new row to the table.
+
+        :arg row: list of items in the table.
+        """
         self.children.append([txt for txt in row])
 
 if __name__ == '__main__':
