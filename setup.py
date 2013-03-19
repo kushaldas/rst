@@ -24,6 +24,9 @@ setup(name='rst',
           ],
       packages=find_packages(),
       data_files=[],
+      install_requires=[
+          'six'
+      ],
       test_suite='tests',
       tests_require=[
           'mock'
