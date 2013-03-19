@@ -18,24 +18,30 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 
+import six
 import codecs
 import StringIO
+from six import u
+from functools import partial
+
+text_ = partial(six.text_type, encoding='utf-8', errors='replace')
 
 
 def create_section(text, depth):
-    marks = u'=-+#'
+    marks = u('=-+#')
     if depth == 1:
-        return marks[depth -1] * len(text) + u'\n' + text + u'\n' + marks[depth -1] * len(text) + u'\n\n'
+        return u("{}\n{}\n{}\n\n".format(marks[depth -1] * len(text), text, marks[depth -1] * len(text)))
     else:
-        return u'\n' + text + u'\n' + marks[depth -1] * len(text) + u'\n\n'
+        #return u'\n' + text + u'\n' +  + u'\n\n'
+        return u("\n{}\n{}\n\n".format(text, marks[depth -1] * len(text)))
 
 
 def print_table(out, header):
     for i, hdr in enumerate(header):
         if i == 0:
-            out.write(u'    * -  %s\n' % hdr)
+            out.write(u('    * -  %s\n' % hdr))
         else:
-            out.write(u'      -  %s\n' % hdr)
+            out.write(u('      -  %s\n' % hdr))
 
 
 class Document(object):
@@ -43,7 +49,7 @@ class Document(object):
     Returns a ``Document`` object.
     """
     def __init__(self, title):
-        self.title = unicode(title)
+        self.title = text_(title)
         self.children = []
 
     def add_child(self, node):
@@ -124,7 +130,7 @@ class Paragraph(Node):
     """
     def __init__(self, text=''):
         Node.__init__(self)
-        self.text = unicode(text)
+        self.text = text_(text)
 
 
 class Section(Node):
@@ -135,7 +141,7 @@ class Section(Node):
     def __init__(self, title, depth=1):
         Node.__init__(self)
         self.depth = depth
-        self.text = unicode(title)
+        self.text = text_(title)
 
 
 class Bulletlist(Node):
@@ -146,7 +152,7 @@ class Bulletlist(Node):
         Node.__init__(self)
 
     def add_item(self, text):
-        self.children.append(unicode(text))
+        self.children.append(text_(text))
 
 
 class Orderedlist(Node):
@@ -157,7 +163,7 @@ class Orderedlist(Node):
         Node.__init__(self)
 
     def add_item(self, text):
-        self.children.append(unicode(text))
+        self.children.append(text_(text))
 
 
 class Table(Node):
@@ -166,12 +172,12 @@ class Table(Node):
     """
     def __init__(self, title='', header=None, width=None):
         Node.__init__(self)
-        self.text = unicode(title)
+        self.text = text_(title)
         self.header = header
         self.width = width
 
     def add_item(self, row):
-        self.children.append([unicode(txt) for txt in row])
+        self.children.append([text_(txt) for txt in row])
 
 if __name__ == '__main__':
     doc = Document('Title of the report')
