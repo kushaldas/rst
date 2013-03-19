@@ -248,6 +248,35 @@ class Orderedlist(Node):
 class Table(Node):
     """
     Represents a Table, (will be wriiten in csv-table style)
+
+    .. doctest::
+
+        >>> import rst
+        >>> doc = rst.Document('Title of the report')
+        >>> tbl = rst.Table('My friends', ['Name', 'Major Project'])
+        >>> tbl.add_item(('Ramki', 'Python'))
+        >>> tbl.add_item(('Pradeepto', 'Kde'))
+        >>> tbl.add_item(('Nicubunu', 'Fedora'))
+        >>> doc.add_child(tbl)
+        True
+        >>> print doc.get_rst()
+        ===================
+        Title of the report
+        ===================
+
+        .. list-table:: My friends
+            :header-rows: 1
+
+            * -  Name
+              -  Major Project
+            * -  Ramki
+              -  Python
+            * -  Pradeepto
+              -  Kde
+            * -  Nicubunu
+              -  Fedora
+
+
     """
     def __init__(self, title='', header=None, width=None):
         Node.__init__(self)
