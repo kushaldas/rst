@@ -132,7 +132,7 @@ class Section(Node):
     Represents a ``Section`` object.
     If you add it under some other node, it will become subsection.
     """
-    def __init__(self, title, depth):
+    def __init__(self, title, depth=1):
         Node.__init__(self)
         self.depth = depth
         self.text = unicode(title)
