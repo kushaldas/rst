@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 #Copyright (C) 2012-2013, Kushal Das <kushaldas@gmail.com>
 
 #Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -20,7 +19,7 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 
-from rst import rst
+import rst
 
 def main():
     doc = rst.Document('Title of the report')
@@ -38,8 +37,18 @@ def main():
 
     doc.add_child(blt)
 
-    sec2 = rst.Section('Why Python is awesome?')
-    doc.add_child(sec2)
+    blt = rst.Bulletlist()
+    blt.add_item('Python')
+    blt.add_item('C')
+    blt.add_item('C++')
+    blt.add_item('Lisp')
+
+    doc.add_child(blt)
+
+
+
+    sec2 = rst.Section('Why Python is awesome?', 2)
+    sec.add_child(sec2)
 
     tbl = rst.Table('My friends', ['Name', 'Major Project'])
     tbl.add_item(('Ramki', 'Python'))
