@@ -19,9 +19,9 @@ Here is a quick example to just start using it. ::
         doc.add_child(para)
 
         blt = rst.Orderedlist()
-        blt.add_child('Red Hat')
-        blt.add_child('Fedora')
-        blt.add_child('Debian')
+        blt.add_item('Red Hat')
+        blt.add_item('Fedora')
+        blt.add_item('Debian')
 
         doc.add_child(blt)
 
@@ -29,9 +29,9 @@ Here is a quick example to just start using it. ::
         doc.add_child(sec2)
 
         tbl = rst.Table('My friends', ['Name', 'Major Project'])
-        tbl.add_child(('Ramki', 'Python'))
-        tbl.add_child(('Pradeepto', 'KDE'))
-        tbl.add_child(('Nicubunu', 'Fedora'))
+        tbl.add_item(('Ramki', 'Python'))
+        tbl.add_item(('Pradeepto', 'KDE'))
+        tbl.add_item(('Nicubunu', 'Fedora'))
         doc.add_child(tbl)
 
         print doc.get_rst()
