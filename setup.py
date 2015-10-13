@@ -38,9 +38,9 @@ setup(name='rst',
           'Topic :: Software Development :: Libraries',
           'License :: OSI Approved :: MIT License',
           'Topic :: System :: Distributed Computing',
-          'Programming Language :: Python :: 2.6',
           'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3.2'
+          'Programming Language :: Python :: 3.3',
+          'Programming Language :: Python :: 3.4',
           ],
       packages=find_packages(),
       data_files=[],
@@ -48,8 +48,4 @@ setup(name='rst',
           'six'
       ],
       test_suite='tests',
-      tests_require=[
-          'mock'
-      ]
 )
-

@@ -51,13 +51,12 @@ class Document(object):
 
         >>> import rst
         >>> doc = rst.Document('Title of the report')
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
-
-
+        <BLANKLINE>
+        <BLANKLINE>
     """
     def __init__(self, title):
         self.title = title
@@ -116,6 +115,7 @@ class Document(object):
                     print_table(out, child.header)
                 for ch in child.children:
                     print_table(out, ch)
+                out.write(u('\n'))
 
         return out.getvalue()
 
@@ -153,12 +153,14 @@ class Paragraph(Node):
         >>> para = rst.Paragraph('This is a paragraph. A long one.')
         >>> doc.add_child(para)
         True
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
+        <BLANKLINE>
         This is a paragraph. A long one.
+        <BLANKLINE>
+        <BLANKLINE>
     """
     def __init__(self, text=''):
         Node.__init__(self)
@@ -168,7 +170,7 @@ class Paragraph(Node):
 class Section(Node):
     """
     Represents a ``Section`` object.
-    
+
     :arg depth: Depth of the section, default is 1
     :arg text: Title of the section
     """
@@ -191,13 +193,15 @@ class Bulletlist(Node):
         >>> blt.add_item('Debian')
         >>> doc.add_child(blt)
         True
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
+        <BLANKLINE>
             * Fedora
             * Debian
+        <BLANKLINE>
+        <BLANKLINE>
     """
     def __init__(self):
         Node.__init__(self)
@@ -224,14 +228,15 @@ class Orderedlist(Node):
         >>> blt.add_item('Debian')
         >>> doc.add_child(blt)
         True
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
+        <BLANKLINE>
             1. Fedora
             2. Debian
-
+        <BLANKLINE>
+        <BLANKLINE>
     """
     def __init__(self):
         Node.__init__(self)
@@ -259,14 +264,14 @@ class Table(Node):
         >>> tbl.add_item(('Nicubunu', 'Fedora'))
         >>> doc.add_child(tbl)
         True
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
+        <BLANKLINE>
         .. list-table:: My friends
             :header-rows: 1
-
+        <BLANKLINE>
             * -  Name
               -  Major Project
             * -  Ramki
@@ -275,8 +280,8 @@ class Table(Node):
               -  Kde
             * -  Nicubunu
               -  Fedora
-
-
+        <BLANKLINE>
+        <BLANKLINE>
     """
     def __init__(self, title='', header=None, width=None):
         Node.__init__(self)
