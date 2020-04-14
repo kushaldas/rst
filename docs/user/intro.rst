@@ -5,8 +5,7 @@ Introduction
 
 Why rst ?
 ----------
-I was looking for a module to create reStructredText documents through code for a long
-time and finally decided to write one for myself.
+I was looking for a module to create reStructuredText documents through code for a long time and finally decided to write one for myself.
 
 
 
