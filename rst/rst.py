@@ -117,6 +117,13 @@ class Document(object):
                     print_table(out, child.header)
                 for ch in child.children:
                     print_table(out, ch)
+                out.write(u('\n'))
+            elif isinstance(child, CodeBlock):
+                out.write(u('.. code-block:: %s\n') % child.lang)
+                if child.linenos:
+                    out.write(u('    :linenos:\n\n'))
+                indented = "\n".join("    {}".format(l) for l in child.code.split("\n"))
+                out.write(u("{}\n".format(indented)))
 
         return out.getvalue()
 
@@ -300,6 +307,38 @@ class Table(Node):
         """
         self.children.append([txt for txt in row])
 
+
+class CodeBlock(Node):
+    r"""
+    Represents a Code Block.
+
+    .. doctest::
+
+        >>> import rst
+        >>> doc = rst.Document('Title of the report')
+        >>> code = rst.CodeBlock("import sys\nsys.stdout.write('Working')", lang="python", linenos=True)
+        >>> doc.add_child(code)
+        True
+        >>> print(doc.get_rst())
+        ===================
+        Title of the report
+        ===================
+        <BLANKLINE>
+        .. code-block:: python
+            :linenos:
+        <BLANKLINE>
+            import sys
+            sys.stdout.write('Working')
+        <BLANKLINE>
+
+    """
+    def __init__(self, code, lang='', linenos=False):
+        Node.__init__(self)
+        self.code = code
+        self.lang = lang
+        self.linenos = linenos
+
+
 if __name__ == '__main__':
     doc = Document('Title of the report')
     para = Paragraph('Just another paragraph. We need few more of these.')
@@ -325,4 +364,7 @@ if __name__ == '__main__':
     tbl.add_child(('Nicubunu', 'Fedora'))
     doc.add_child(tbl)
 
-    doc.get_rst()
+    code = CodeBlock("import sys\nsys.stdout.write('Working')", lang="python", linenos=True)
+    doc.add_child(code)
+
+    print(doc.get_rst())
