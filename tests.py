@@ -68,7 +68,7 @@ Sample document
         self.assertEqual(text, actual_text)
 
     def test_codeblock(self):
-        "test the OrderedList in the document"
+        "test the CodeBlock in the document"
         doc = rst.Document(u("T"))
         code = rst.CodeBlock("import sys", lang="python", linenos=True)
         doc.add_child(code)
