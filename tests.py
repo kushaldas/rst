@@ -67,6 +67,15 @@ Sample document
         actual_text = u('=\nT\n=\n\n    1. Fedora\n    2. Debian\n\n')
         self.assertEqual(text, actual_text)
 
+    def test_codeblock(self):
+        "test the CodeBlock in the document"
+        doc = rst.Document(u("T"))
+        code = rst.CodeBlock("import sys", lang="python", linenos=True)
+        doc.add_child(code)
+        text = doc.get_rst()
+        actual_text = u('=\nT\n=\n\n.. code-block:: python\n    :linenos:\n\n    import sys\n')
+        self.assertEqual(text, actual_text)
+
 
 if __name__ == '__main__':
     unittest.main()

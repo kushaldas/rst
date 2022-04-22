@@ -18,13 +18,14 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 
+from __future__ import print_function
+
 import codecs
 try:
     import StringIO
 except:
     import io
 from six import u
-
 
 def create_section(text, depth):
     marks = u('=-+#')
@@ -51,12 +52,12 @@ class Document(object):
 
         >>> import rst
         >>> doc = rst.Document('Title of the report')
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
-
+        <BLANKLINE>
+        <BLANKLINE>
 
     """
     def __init__(self, title):
@@ -116,6 +117,13 @@ class Document(object):
                     print_table(out, child.header)
                 for ch in child.children:
                     print_table(out, ch)
+                out.write(u('\n'))
+            elif isinstance(child, CodeBlock):
+                out.write(u('.. code-block:: %s\n') % child.lang)
+                if child.linenos:
+                    out.write(u('    :linenos:\n\n'))
+                indented = "\n".join("    {}".format(l) for l in child.code.split("\n"))
+                out.write(u("{}\n".format(indented)))
 
         return out.getvalue()
 
@@ -153,12 +161,14 @@ class Paragraph(Node):
         >>> para = rst.Paragraph('This is a paragraph. A long one.')
         >>> doc.add_child(para)
         True
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
+        <BLANKLINE>
         This is a paragraph. A long one.
+        <BLANKLINE>
+        <BLANKLINE>
     """
     def __init__(self, text=''):
         Node.__init__(self)
@@ -191,13 +201,16 @@ class Bulletlist(Node):
         >>> blt.add_item('Debian')
         >>> doc.add_child(blt)
         True
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
+        <BLANKLINE>
             * Fedora
             * Debian
+        <BLANKLINE>
+        <BLANKLINE>
+
     """
     def __init__(self):
         Node.__init__(self)
@@ -224,13 +237,15 @@ class Orderedlist(Node):
         >>> blt.add_item('Debian')
         >>> doc.add_child(blt)
         True
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
+        <BLANKLINE>
             1. Fedora
             2. Debian
+        <BLANKLINE>
+        <BLANKLINE>
 
     """
     def __init__(self):
@@ -259,14 +274,14 @@ class Table(Node):
         >>> tbl.add_item(('Nicubunu', 'Fedora'))
         >>> doc.add_child(tbl)
         True
-        >>> print doc.get_rst()
+        >>> print(doc.get_rst())
         ===================
         Title of the report
         ===================
-
+        <BLANKLINE>
         .. list-table:: My friends
             :header-rows: 1
-
+        <BLANKLINE>
             * -  Name
               -  Major Project
             * -  Ramki
@@ -275,7 +290,7 @@ class Table(Node):
               -  Kde
             * -  Nicubunu
               -  Fedora
-
+        <BLANKLINE>
 
     """
     def __init__(self, title='', header=None, width=None):
@@ -291,6 +306,38 @@ class Table(Node):
         :arg row: list of items in the table.
         """
         self.children.append([txt for txt in row])
+
+
+class CodeBlock(Node):
+    r"""
+    Represents a Code Block.
+
+    .. doctest::
+
+        >>> import rst
+        >>> doc = rst.Document('Title of the report')
+        >>> code = rst.CodeBlock("import sys\nsys.stdout.write('Working')", lang="python", linenos=True)
+        >>> doc.add_child(code)
+        True
+        >>> print(doc.get_rst())
+        ===================
+        Title of the report
+        ===================
+        <BLANKLINE>
+        .. code-block:: python
+            :linenos:
+        <BLANKLINE>
+            import sys
+            sys.stdout.write('Working')
+        <BLANKLINE>
+
+    """
+    def __init__(self, code, lang='', linenos=False):
+        Node.__init__(self)
+        self.code = code
+        self.lang = lang
+        self.linenos = linenos
+
 
 if __name__ == '__main__':
     doc = Document('Title of the report')
@@ -317,4 +364,7 @@ if __name__ == '__main__':
     tbl.add_child(('Nicubunu', 'Fedora'))
     doc.add_child(tbl)
 
-    doc.get_rst()
+    code = CodeBlock("import sys\nsys.stdout.write('Working')", lang="python", linenos=True)
+    doc.add_child(code)
+
+    print(doc.get_rst())

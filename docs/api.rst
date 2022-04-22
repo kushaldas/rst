@@ -21,3 +21,6 @@ API
 
 .. autoclass:: rst.Table
    :members:
+
+.. autoclass:: rst.CodeBlock
+   :members:
