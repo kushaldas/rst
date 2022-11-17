@@ -96,36 +96,7 @@ class Document(object):
         out.write(text)
         #Now goto each children
         for child in self.children:
-            if isinstance(child, Paragraph):
-                #We have a paragraph here
-                out.write(child.get_rst())
-            elif isinstance(child, Section):
-                out.write(child.get_rst())
-            elif isinstance(child, Bulletlist):
-                for ch in child.children:
-                    out.write(u("{}* {}\n".format(' ' * 4, ch)))
-                out.write(u('\n'))
-            elif isinstance(child, Orderedlist):
-                for i, ch in enumerate(child.children):
-                    out.write(u("{}{}. {}\n".format(' ' * 4, str(i+1), ch)))
-                out.write(u('\n'))
-            elif isinstance(child, Table):
-                out.write(u('.. list-table:: %s\n') % child.text)
-                if child.width:
-                    out.write(u('    %s') % child.width)
-                if child.header:
-                    out.write(u('    :header-rows: 1\n\n'))
-                    print_table(out, child.header)
-                for ch in child.children:
-                    print_table(out, ch)
-                out.write(u('\n'))
-            elif isinstance(child, CodeBlock):
-                out.write(u('.. code-block:: %s\n') % child.lang)
-                if child.linenos:
-                    out.write(u('    :linenos:\n\n'))
-                indented = "\n".join("    {}".format(l) for l in child.code.split("\n"))
-                out.write(u("{}\n".format(indented)))
-
+            child.write_rst(out)
         return out.getvalue()
 
 
@@ -140,11 +111,7 @@ class Node(object):
         self.children = []
         self.text = None
 
-    @abstractmethod
-    def get_rst(self) -> str:
-        """Return a utf8 representation of a node.
-         inherited node must provide a concrete implementation."""
-        pass
+
 
     def add_child(self, node):
         """
@@ -160,7 +127,7 @@ class Node(object):
              inherited node must provide a concrete implementation."""
             pass
 
-class Paragraph(Node):
+class Paragraph(Node,):
     """
     Represents a paragraph
 
