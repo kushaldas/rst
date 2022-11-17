@@ -98,7 +98,7 @@ class Document(object):
         for child in self.children:
             if isinstance(child, Paragraph):
                 #We have a paragraph here
-                out.write(child.text + u('\n\n'))
+                out.write(child.get_rst())
             elif isinstance(child, Section):
                 text = create_section(child.text, child.depth)
                 out.write(text)
@@ -182,11 +182,14 @@ class Paragraph(Node):
         Node.__init__(self)
         self.text = text
 
+    def get_rst(self):
+        return self.text + u('\n\n')
+
 
 class Section(Node):
     """
     Represents a ``Section`` object.
-    
+
     :arg depth: Depth of the section, default is 1
     :arg text: Title of the section
     """
