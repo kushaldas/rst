@@ -100,8 +100,7 @@ class Document(object):
                 #We have a paragraph here
                 out.write(child.get_rst())
             elif isinstance(child, Section):
-                text = create_section(child.text, child.depth)
-                out.write(text)
+                out.write(child.get_rst())
             elif isinstance(child, Bulletlist):
                 for ch in child.children:
                     out.write(u("{}* {}\n".format(' ' * 4, ch)))
@@ -198,6 +197,9 @@ class Section(Node):
         self.depth = depth
         self.text = title
 
+    def get_rst(self):
+        result = create_section(self.text, self.depth)
+        return result
 
 class Bulletlist(Node):
     """
