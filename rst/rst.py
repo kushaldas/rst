@@ -154,6 +154,11 @@ class Node(object):
         self.children.append(node)
         return True
 
+        @abstractmethod
+        def write_rst(self, output) -> None:
+            """Return a utf8 representation of a node.
+             inherited node must provide a concrete implementation."""
+            pass
 
 class Paragraph(Node):
     """
@@ -181,8 +186,8 @@ class Paragraph(Node):
         Node.__init__(self)
         self.text = text
 
-    def get_rst(self):
-        return self.text + u('\n\n')
+    def write_rst(self,output):
+        output.write( self.text + u('\n\n'))
 
 
 class Section(Node):
@@ -197,9 +202,9 @@ class Section(Node):
         self.depth = depth
         self.text = title
 
-    def get_rst(self):
+    def write_rst(self, output):
         result = create_section(self.text, self.depth)
-        return result
+        output.write(result)
 
 class Bulletlist(Node):
     """
@@ -236,6 +241,11 @@ class Bulletlist(Node):
         """
         self.children.append(text)
 
+    def write_rst(self,output):
+        for ch in self.children:
+            output.write(u("{}* {}\n".format(' ' * 4, ch)))
+        output.write(u('\n'))
+
 
 class Orderedlist(Node):
     """
@@ -271,6 +281,11 @@ class Orderedlist(Node):
         :arg text: text to be added in the list, remember it is ordered list.
         """
         self.children.append(text)
+
+    def write_rst(self, output) -> None:
+        for i, ch in enumerate(self.children):
+            output.write(u("{}{}. {}\n".format(' ' * 4, str(i + 1), ch)))
+        output.write(u('\n'))
 
 
 class Table(Node):
@@ -320,6 +335,17 @@ class Table(Node):
         """
         self.children.append([txt for txt in row])
 
+    def write_rst(self, output) -> None:
+        output.write(u('.. list-table:: %s\n') % self.text)
+        if self.width:
+            output.write(u('    %s') % self.width)
+        if self.header:
+            output.write(u('    :header-rows: 1\n\n'))
+            print_table(output, self.header)
+        for ch in self.children:
+            print_table(output, ch)
+        output.write(u('\n'))
+
 
 class CodeBlock(Node):
     r"""
@@ -350,6 +376,14 @@ class CodeBlock(Node):
         self.code = code
         self.lang = lang
         self.linenos = linenos
+
+    def write_rst(self, output) -> None:
+        output.write(u('.. code-block:: %s\n') % self.lang)
+        if self.linenos:
+            output.write(u('    :linenos:\n\n'))
+        indented = "\n".join(
+                "    {}".format(l) for l in self.code.split("\n"))
+        output.write(u("{}\n".format(indented)))
 
 
 if __name__ == '__main__':
