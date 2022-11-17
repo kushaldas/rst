@@ -21,6 +21,8 @@
 from __future__ import print_function
 
 import codecs
+from abc import abstractmethod
+
 try:
     import StringIO
 except:
@@ -138,6 +140,12 @@ class Node(object):
         self.depth = 1
         self.children = []
         self.text = None
+
+    @abstractmethod
+    def get_rst(self) -> str:
+        """Return a utf8 representation of a node.
+         inherited node must provide a concrete implementation."""
+        pass
 
     def add_child(self, node):
         """
