@@ -38,14 +38,6 @@ def create_section(text, depth):
         return u("\n{}\n{}\n\n".format(text, marks[depth -1] * len(text)))
 
 
-def print_table(out, header):
-    for i, hdr in enumerate(header):
-        if i == 0:
-            out.write(u('    * -  %s\n') % hdr)
-        else:
-            out.write(u('      -  %s\n') % hdr)
-
-
 class Document(object):
     """
     Returns a ``Document`` object.
@@ -121,11 +113,11 @@ class Node(object):
         self.children.append(node)
         return True
 
-        @abstractmethod
-        def write_rst(self, output) -> None:
-            """Return a utf8 representation of a node.
-             inherited node must provide a concrete implementation."""
-            pass
+    @abstractmethod
+    def write_rst(self, output) -> None:
+        """Return a utf8 representation of a node.
+         inherited node must provide a concrete implementation."""
+        pass
 
 class Paragraph(Node,):
     """
