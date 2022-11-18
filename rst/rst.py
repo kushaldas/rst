@@ -302,15 +302,22 @@ class Table(Node):
         """
         self.children.append([txt for txt in row])
 
+    @staticmethod
+    def _print_table(out, header):
+        for i, hdr in enumerate(header):
+            if i == 0:
+                out.write(u('    * -  %s\n') % hdr)
+            else:
+                out.write(u('      -  %s\n') % hdr)
     def write_rst(self, output) -> None:
         output.write(u('.. list-table:: %s\n') % self.text)
         if self.width:
             output.write(u('    %s') % self.width)
         if self.header:
             output.write(u('    :header-rows: 1\n\n'))
-            print_table(output, self.header)
+            self._print_table(output, self.header)
         for ch in self.children:
-            print_table(output, ch)
+            self._print_table(output,ch)
         output.write(u('\n'))
 
 
