@@ -92,8 +92,8 @@ class Document(object):
             out = StringIO.StringIO()
         except:
             out = io.StringIO()
-        text = create_section(self.title, 1)
-        out.write(text)
+        text = Section(self.title,1)
+        text.write_rst(out)
         #Now goto each children
         for child in self.children:
             child.write_rst(out)
