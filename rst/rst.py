@@ -154,19 +154,22 @@ class Section(Node):
         Node.__init__(self)
         self.depth = depth
         self.text = title
-    @staticmethod
-    def _create_section(text, depth):
+
+    def _create_section(self):
         marks = u('=-+#')
-        if depth == 1:
+        index = self.depth - 1
+        text_length = len(self.text)
+        if self.depth == 1:
             return u(
-                "{}\n{}\n{}\n\n".format(marks[depth - 1] * len(text), text,
-                                        marks[depth - 1] * len(text)))
+                "{}\n{}\n{}\n\n".format(marks[index] * text_length,
+                                        self.text,
+                                        marks[index] * text_length))
         else:
             # return u'\n' + text + u'\n' +  + u'\n\n'
-            return u("\n{}\n{}\n\n".format(text, marks[depth - 1] * len(text)))
+            return u("\n{}\n{}\n\n".format(self.text, marks[index] * text_length))
 
     def write_rst(self, output):
-        result = self._create_section(self.text, self.depth)
+        result = self._create_section()
         output.write(result)
 
 class Bulletlist(Node):
