@@ -29,13 +29,6 @@ except:
     import io
 from six import u
 
-def create_section(text, depth):
-    marks = u('=-+#')
-    if depth == 1:
-        return u("{}\n{}\n{}\n\n".format(marks[depth -1] * len(text), text, marks[depth -1] * len(text)))
-    else:
-        #return u'\n' + text + u'\n' +  + u'\n\n'
-        return u("\n{}\n{}\n\n".format(text, marks[depth -1] * len(text)))
 
 
 class Document(object):
@@ -116,8 +109,9 @@ class Node(object):
     @abstractmethod
     def write_rst(self, output) -> None:
         """Return a utf8 representation of a node.
-         inherited node must provide a concrete implementation."""
-        pass
+         inherited node must provide a concrete implementation.
+         This must use output.write() for each line of its definition"""
+
 
 class Paragraph(Node,):
     """
@@ -160,9 +154,19 @@ class Section(Node):
         Node.__init__(self)
         self.depth = depth
         self.text = title
+    @staticmethod
+    def _create_section(text, depth):
+        marks = u('=-+#')
+        if depth == 1:
+            return u(
+                "{}\n{}\n{}\n\n".format(marks[depth - 1] * len(text), text,
+                                        marks[depth - 1] * len(text)))
+        else:
+            # return u'\n' + text + u'\n' +  + u'\n\n'
+            return u("\n{}\n{}\n\n".format(text, marks[depth - 1] * len(text)))
 
     def write_rst(self, output):
-        result = create_section(self.text, self.depth)
+        result = self._create_section(self.text, self.depth)
         output.write(result)
 
 class Bulletlist(Node):
