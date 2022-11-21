@@ -21,27 +21,14 @@
 from __future__ import print_function
 
 import codecs
+from abc import abstractmethod
+
 try:
     import StringIO
 except:
     import io
 from six import u
 
-def create_section(text, depth):
-    marks = u('=-+#')
-    if depth == 1:
-        return u("{}\n{}\n{}\n\n".format(marks[depth -1] * len(text), text, marks[depth -1] * len(text)))
-    else:
-        #return u'\n' + text + u'\n' +  + u'\n\n'
-        return u("\n{}\n{}\n\n".format(text, marks[depth -1] * len(text)))
-
-
-def print_table(out, header):
-    for i, hdr in enumerate(header):
-        if i == 0:
-            out.write(u('    * -  %s\n') % hdr)
-        else:
-            out.write(u('      -  %s\n') % hdr)
 
 
 class Document(object):
@@ -90,41 +77,11 @@ class Document(object):
             out = StringIO.StringIO()
         except:
             out = io.StringIO()
-        text = create_section(self.title, 1)
-        out.write(text)
+        text = Section(self.title,1)
+        text.write_rst(out)
         #Now goto each children
         for child in self.children:
-            if isinstance(child, Paragraph):
-                #We have a paragraph here
-                out.write(child.text + u('\n\n'))
-            elif isinstance(child, Section):
-                text = create_section(child.text, child.depth)
-                out.write(text)
-            elif isinstance(child, Bulletlist):
-                for ch in child.children:
-                    out.write(u("{}* {}\n".format(' ' * 4, ch)))
-                out.write(u('\n'))
-            elif isinstance(child, Orderedlist):
-                for i, ch in enumerate(child.children):
-                    out.write(u("{}{}. {}\n".format(' ' * 4, str(i+1), ch)))
-                out.write(u('\n'))
-            elif isinstance(child, Table):
-                out.write(u('.. list-table:: %s\n') % child.text)
-                if child.width:
-                    out.write(u('    %s') % child.width)
-                if child.header:
-                    out.write(u('    :header-rows: 1\n\n'))
-                    print_table(out, child.header)
-                for ch in child.children:
-                    print_table(out, ch)
-                out.write(u('\n'))
-            elif isinstance(child, CodeBlock):
-                out.write(u('.. code-block:: %s\n') % child.lang)
-                if child.linenos:
-                    out.write(u('    :linenos:\n\n'))
-                indented = "\n".join("    {}".format(l) for l in child.code.split("\n"))
-                out.write(u("{}\n".format(indented)))
-
+            child.write_rst(out)
         return out.getvalue()
 
 
@@ -139,6 +96,8 @@ class Node(object):
         self.children = []
         self.text = None
 
+
+
     def add_child(self, node):
         """
         Adds a ``Node`` object to the current.
@@ -147,8 +106,14 @@ class Node(object):
         self.children.append(node)
         return True
 
+    @abstractmethod
+    def write_rst(self, output) -> None:
+        """Return a utf8 representation of a node.
+         inherited node must provide a concrete implementation.
+         This must use output.write() for each line of its definition"""
 
-class Paragraph(Node):
+
+class Paragraph(Node,):
     """
     Represents a paragraph
 
@@ -174,11 +139,14 @@ class Paragraph(Node):
         Node.__init__(self)
         self.text = text
 
+    def write_rst(self,output):
+        output.write( self.text + u('\n\n'))
+
 
 class Section(Node):
     """
     Represents a ``Section`` object.
-    
+
     :arg depth: Depth of the section, default is 1
     :arg text: Title of the section
     """
@@ -187,6 +155,22 @@ class Section(Node):
         self.depth = depth
         self.text = title
 
+    def _create_section(self):
+        marks = u('=-+#')
+        index = self.depth - 1
+        text_length = len(self.text)
+        if self.depth == 1:
+            return u(
+                "{}\n{}\n{}\n\n".format(marks[index] * text_length,
+                                        self.text,
+                                        marks[index] * text_length))
+        else:
+            # return u'\n' + text + u'\n' +  + u'\n\n'
+            return u("\n{}\n{}\n\n".format(self.text, marks[index] * text_length))
+
+    def write_rst(self, output):
+        result = self._create_section()
+        output.write(result)
 
 class Bulletlist(Node):
     """
@@ -223,6 +207,11 @@ class Bulletlist(Node):
         """
         self.children.append(text)
 
+    def write_rst(self,output):
+        for ch in self.children:
+            output.write(u("{}* {}\n".format(' ' * 4, ch)))
+        output.write(u('\n'))
+
 
 class Orderedlist(Node):
     """
@@ -258,6 +247,11 @@ class Orderedlist(Node):
         :arg text: text to be added in the list, remember it is ordered list.
         """
         self.children.append(text)
+
+    def write_rst(self, output) -> None:
+        for i, ch in enumerate(self.children):
+            output.write(u("{}{}. {}\n".format(' ' * 4, str(i + 1), ch)))
+        output.write(u('\n'))
 
 
 class Table(Node):
@@ -307,6 +301,24 @@ class Table(Node):
         """
         self.children.append([txt for txt in row])
 
+    @staticmethod
+    def _print_table(out, header):
+        for i, hdr in enumerate(header):
+            if i == 0:
+                out.write(u('    * -  %s\n') % hdr)
+            else:
+                out.write(u('      -  %s\n') % hdr)
+    def write_rst(self, output) -> None:
+        output.write(u('.. list-table:: %s\n') % self.text)
+        if self.width:
+            output.write(u('    %s') % self.width)
+        if self.header:
+            output.write(u('    :header-rows: 1\n\n'))
+            self._print_table(output, self.header)
+        for ch in self.children:
+            self._print_table(output,ch)
+        output.write(u('\n'))
+
 
 class CodeBlock(Node):
     r"""
@@ -337,6 +349,14 @@ class CodeBlock(Node):
         self.code = code
         self.lang = lang
         self.linenos = linenos
+
+    def write_rst(self, output) -> None:
+        output.write(u('.. code-block:: %s\n') % self.lang)
+        if self.linenos:
+            output.write(u('    :linenos:\n\n'))
+        indented = "\n".join(
+                "    {}".format(l) for l in self.code.split("\n"))
+        output.write(u("{}\n".format(indented)))
 
 
 if __name__ == '__main__':
