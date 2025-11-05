@@ -18,4 +18,8 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 
+"""Module to create reStructuredText documents through code."""
+
+__version__ = "0.1"
+
 from .rst import *
