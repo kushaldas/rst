@@ -10,15 +10,9 @@ The first step to using any software package is getting it properly installed.
 Distribute & Pip
 ----------------
 
-Installing rst is simple with `pip <http://www.pip-installer.org/>`_::
+Installing rst is simple with `pip <https://pip.pypa.io/en/stable/getting-started/>`_::
 
-    $ pip install rst
-
-or, with `easy_install <http://pypi.python.org/pypi/setuptools>`_::
-
-    $ easy_install rst
-
-But, you really `shouldn’t use easy_install <http://www.pip-installer.org/en/latest/other-tools.html#pip-compared-to-easy-install>`_.
+    $ python3 -m pip install rst
 
 
 
@@ -42,7 +36,14 @@ Or, download the `zip file <https://github.com/kushaldas/rst/zipball/master>`_::
 
 
 Once you have a copy of the source, you can embed it in your Python package,
-or install it into your site-packages easily::
+or install it into your site-packages easily.
 
-    $ python setup.py install
+Local build and install
+-------------------------
 
+To build and install the package locally, run the following commands::
+
+    $ python3 -m venv .venv
+    $ .venv/bin/activate
+    $ python3 -m pip install flit
+    $ python3 -m pip install -e .
