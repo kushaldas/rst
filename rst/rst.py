@@ -18,30 +18,24 @@
 #OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 #SOFTWARE.
 
-from __future__ import print_function
-
 import codecs
-try:
-    import StringIO
-except:
-    import io
-from six import u
+import io
 
 def create_section(text, depth):
-    marks = u('=-+#')
+    marks = '=-+#'
     if depth == 1:
-        return u("{}\n{}\n{}\n\n".format(marks[depth -1] * len(text), text, marks[depth -1] * len(text)))
+        return "{}\n{}\n{}\n\n".format(marks[depth -1] * len(text), text, marks[depth -1] * len(text))
     else:
         #return u'\n' + text + u'\n' +  + u'\n\n'
-        return u("\n{}\n{}\n\n".format(text, marks[depth -1] * len(text)))
+        return "\n{}\n{}\n\n".format(text, marks[depth -1] * len(text))
 
 
 def print_table(out, header):
     for i, hdr in enumerate(header):
         if i == 0:
-            out.write(u('    * -  %s\n') % hdr)
+            out.write('    * -  %s\n' % hdr)
         else:
-            out.write(u('      -  %s\n') % hdr)
+            out.write('      -  %s\n' % hdr)
 
 
 class Document(object):
@@ -86,44 +80,41 @@ class Document(object):
         """
         Returns the rst representation of the document in unicode format.
         """
-        try:
-            out = StringIO.StringIO()
-        except:
-            out = io.StringIO()
+        out = io.StringIO()
         text = create_section(self.title, 1)
         out.write(text)
         #Now goto each children
         for child in self.children:
             if isinstance(child, Paragraph):
                 #We have a paragraph here
-                out.write(child.text + u('\n\n'))
+                out.write(child.text + '\n\n')
             elif isinstance(child, Section):
                 text = create_section(child.text, child.depth)
                 out.write(text)
             elif isinstance(child, Bulletlist):
                 for ch in child.children:
-                    out.write(u("{}* {}\n".format(' ' * 4, ch)))
-                out.write(u('\n'))
+                    out.write("{}* {}\n".format(' ' * 4, ch))
+                out.write('\n')
             elif isinstance(child, Orderedlist):
                 for i, ch in enumerate(child.children):
-                    out.write(u("{}{}. {}\n".format(' ' * 4, str(i+1), ch)))
-                out.write(u('\n'))
+                    out.write("{}{}. {}\n".format(' ' * 4, str(i+1), ch))
+                out.write('\n')
             elif isinstance(child, Table):
-                out.write(u('.. list-table:: %s\n') % child.text)
+                out.write('.. list-table:: %s\n' % child.text)
                 if child.width:
-                    out.write(u('    %s') % child.width)
+                    out.write('    %s' % child.width)
                 if child.header:
-                    out.write(u('    :header-rows: 1\n\n'))
+                    out.write('    :header-rows: 1\n\n')
                     print_table(out, child.header)
                 for ch in child.children:
                     print_table(out, ch)
-                out.write(u('\n'))
+                out.write('\n')
             elif isinstance(child, CodeBlock):
-                out.write(u('.. code-block:: %s\n') % child.lang)
+                out.write('.. code-block:: %s\n' % child.lang)
                 if child.linenos:
-                    out.write(u('    :linenos:\n\n'))
+                    out.write('    :linenos:\n\n')
                 indented = "\n".join("    {}".format(l) for l in child.code.split("\n"))
-                out.write(u("{}\n".format(indented)))
+                out.write("{}\n".format(indented))
 
         return out.getvalue()
 

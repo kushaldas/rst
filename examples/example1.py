@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#Copyright (C) 2012-2013, Kushal Das <kushaldas@gmail.com>
+#Copyright (C) 2012, Kushal Das <kushaldas@gmail.com>
 
 #Permission is hereby granted, free of charge, to any person obtaining a copy of
 #this software and associated documentation files (the "Software"), to deal in
@@ -56,7 +56,7 @@ def main():
     tbl.add_item(('Nicubunu', 'Fedora'))
     doc.add_child(tbl)
 
-    print doc.get_rst()
+    print(doc.get_rst())
 
 if __name__ == '__main__':
     main()
