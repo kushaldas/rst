@@ -15,10 +15,9 @@ maintainers = [
 ]
 license = {text = "MIT"}
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Topic :: Software Development :: Libraries",
     "License :: OSI Approved :: MIT License",
-    "Topic :: System :: Distributed Computing",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
